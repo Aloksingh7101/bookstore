@@ -1,22 +1,34 @@
-import express from "express"
+import express from "express";
 import mongoose from "mongoose";
-import dotenv from "dotenv"
-import bookRoute from "./route/book.route.js"
-import userRoute from "./route/user.route.js"
+import dotenv from "dotenv";
+import bookRoute from "./route/book.route.js";
+import userRoute from "./route/user.route.js";
 import cors from "cors";
-dotenv.config();
-// console.log(process.env.MongoDBURI,'dak;lfa;f')
-const app=express();
-app.use(cors({
-  origin: "*", // Allow all origins (or replace with ["http://example.com", "https://yourfrontend.com"])
-  methods: ["GET", "POST", "PUT", "DELETE"], // Allowed HTTP methods
-  allowedHeaders: ["Content-Type", "Authorization"], // Allowed headers
-}));
-app.use(express.json());
-const PORT = process.env.PORT || 4000;
-const URI = process.env.MongoDBURI; 
 
-// Use async/await for better error handling
+dotenv.config();
+
+const app = express();
+
+// In your Express app (server.js/index.js)
+const corsOptions = {
+  origin: process.env.https://bookstore-nine-puce.vercel.app/|| "http://localhost:3000", // Must match your frontend URL exactly
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // MUST include OPTIONS
+  allowedHeaders: ["Content-Type", "Authorization", "Accept"],
+  credentials: true, // If using cookies/tokens
+  preflightContinue: false, // Let CORS handle preflight
+  optionsSuccessStatus: 204 // Some legacy browsers choke on 204
+};
+
+app.use(cors(corsOptions));
+
+// Handle preflight requests
+app.options('*', cors(corsOptions)); // Enable preflight for all routes
+app.use(express.json());
+
+const PORT = process.env.PORT || 4000;
+const URI = process.env.MongoDBURI;
+
+// MongoDB Connection
 (async () => {
   try {
     await mongoose.connect(URI, {
@@ -26,15 +38,14 @@ const URI = process.env.MongoDBURI;
     console.log("Connected to MongoDB");
   } catch (error) {
     console.error("Connection Error:", error);
-    process.exit(1); // Exit if DB connection fails
+    process.exit(1);
   }
 })();
-// difining route
-app.use("/book",bookRoute)
-app.use("/user",userRoute)
 
-    
+// Routes
+app.use("/book", bookRoute);
+app.use("/user", userRoute);
 
-app.listen(PORT,()=>{
-      console.log(`server run suucesfully ${PORT}`);
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
