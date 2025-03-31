@@ -5,31 +5,30 @@ import bookRoute from "./route/book.route.js";
 import userRoute from "./route/user.route.js";
 import cors from "cors";
 
+// Load environment variables
 dotenv.config();
 
 const app = express();
 
-// In your Express app (server.js/index.js)
-const corsOptions = {
-  origin: process.env.https://bookstore-nine-puce.vercel.app/|| "http://localhost:3000", // Must match your frontend URL exactly
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // MUST include OPTIONS
-  allowedHeaders: ["Content-Type", "Authorization", "Accept"],
-  credentials: true, // If using cookies/tokens
-  preflightContinue: false, // Let CORS handle preflight
-  optionsSuccessStatus: 204 // Some legacy browsers choke on 204
-};
+// CORS configuration
+// const corsOptions = {
+//   origin: process.env.FRONTEND_URL || "http://localhost:5173",
+//   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+//   allowedHeaders: ["Content-Type", "Authorization", "Accept"],
+//   credentials: true,
+//   // preflightContinue: false,
+//   // optionsSuccessStatus: 204
+// };
 
-app.use(cors(corsOptions));
-
-// Handle preflight requests
-app.options('*', cors(corsOptions)); // Enable preflight for all routes
+app.use(cors());
+// app.options("*", cors(corsOptions)); // Enable preflight for all routes
 app.use(express.json());
 
 const PORT = process.env.PORT || 4000;
 const URI = process.env.MongoDBURI;
 
-// MongoDB Connection
-(async () => {
+// Connect to MongoDB
+const connectToDatabase = async () => {
   try {
     await mongoose.connect(URI, {
       useNewUrlParser: true,
@@ -37,15 +36,17 @@ const URI = process.env.MongoDBURI;
     });
     console.log("Connected to MongoDB");
   } catch (error) {
-    console.error("Connection Error:", error);
+    console.error("MongoDB Connection Error:", error);
     process.exit(1);
   }
-})();
+};
 
 // Routes
 app.use("/book", bookRoute);
 app.use("/user", userRoute);
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+// Start server
+app.listen(PORT, async () => {
+  await connectToDatabase();
+  console.log(`Server is running on port ${PORT}`);
 });
