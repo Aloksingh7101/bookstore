@@ -40,7 +40,7 @@ const connectToDatabase = async () => {
     process.exit(1);
   }
 };
-
+connectToDatabase();
 // Routes
 app.use("/book", bookRoute);
 app.use("/user", userRoute);
