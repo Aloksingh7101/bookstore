@@ -19,7 +19,7 @@ function Signup() {
         password : data.password
 
       }
-       await axios.post("https://bookstore-1-00so.onrender.com/user/signup",userinfo)
+       await axios.post("https://bookstore-vlsy.onrender.com/user/signup",userinfo)
       .then((res)=>{
         console.log(res.data);
         toast.success('Signup successfully!');
