@@ -13,7 +13,6 @@ function App() {
   
   return (
     <>
-      <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home/>}/>
         <Route 
@@ -23,7 +22,6 @@ function App() {
         <Route path="/signup" element={<Signup/>}/>
         <Route path="/contact" element={<Contect/>}/>
       </Routes>
-      </BrowserRouter>
       <Toaster />
     </>
   );
