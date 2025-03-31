@@ -41,7 +41,6 @@ const connectToDatabase = async () => {
   }
 };
 connectToDatabase();
-
 // Routes
 app.use("/book", bookRoute);
 app.use("/user", userRoute);
@@ -50,4 +49,3 @@ app.use("/user", userRoute);
 app.listen(PORT, async () => {
   await connectToDatabase();
   console.log(`Server is running on port ${PORT}`);
-});
